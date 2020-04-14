@@ -6,15 +6,10 @@ using UnityEngine.UI;
 public class PlayerScript : MonoBehaviour
 {
     private Vector3 defaulPosition;
-    private Vector2 offset;
     private Vector2 mouseDownPos;
     private Vector2 oldCameraPosition;
 
-    [Header("Canvas")]
     public Camera camera;
-    public Text scoreLabel;
-    private int score;
-
     
     [Header("Physics")]
     public Rigidbody2D rb;
@@ -36,12 +31,8 @@ public class PlayerScript : MonoBehaviour
         rb.angularVelocity = 0.0f;
         rb.freezeRotation = true;
 
-        offset = Vector2.zero;
-
         touchedGround = false;
-
         defaulPosition = transform.position;
-        score = 0;
     }
 
      private IEnumerator wait(float sec) {
@@ -51,44 +42,54 @@ public class PlayerScript : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        // Get original position of the tap
         if (Input.GetMouseButtonDown(0)) {
-            mouseDownPos = camera.ScreenToWorldPoint (Input.mousePosition);
-            oldCameraPosition = camera.transform.position;
+            mouseDownPos = Input.mousePosition;
         } 
 
+        // Get updated position of the tap
         if (Input.GetMouseButton(0))
         {
-            animController.SetInteger("AnimState", 1);
-
-            Vector2 mouseDragPos = camera.ScreenToWorldPoint (Input.mousePosition);
-            mouseDragPos += offset;
-
-            Vector2 temtMouseDownPos = mouseDownPos + offset;
-            Vector2 direction =  mouseDragPos - temtMouseDownPos;
+            // Calculating mouse drag direction
+            Vector2 mouseDragPos = Input.mousePosition;
+            Vector2 direction =  mouseDragPos - mouseDownPos;
             direction.Normalize();
 
             //Debug.Log(mouseDownPos + "  " + mouseDragPos + " " + direction);
-            offset += speed * direction * 0.01f;
+          
 
-            rb.velocity = new Vector2(speed * direction.x, rb.velocity.y);
+            // Apply force to the player according to drag direction
+            if(direction.x > 0) {
+                rb.AddForce(new Vector2(speed, 0.0f));
+                transform.localScale = new Vector3(8.0f, 8.0f, 8.0f);
+                // Setting animation to walk
+                animController.SetInteger("AnimState", 1);
+                //transform.localScale * new Vector3(1.0f, 1.0f, 1.0f);
+            } else if(direction.x < 0) {
+                rb.AddForce(new Vector2(-speed, 0.0f));
+                transform.localScale = new Vector3(-8.0f, 8.0f, 8.0f);
+                // Setting animation to walk
+                 animController.SetInteger("AnimState", 1);
+            }
 
-            if (direction.y > 0.3 && touchedGround) {
-                rb.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse);
+            // Keep Velocity in a range
+            var xVelocity = Mathf.Clamp(Mathf.Abs(rb.velocity.x), 0.0f, maxVelocity);
+            rb.velocity = new Vector2(xVelocity * direction.x, rb.velocity.y);
+
+            // Jump
+            if (direction.y > 0.4 && touchedGround) {
+                animController.SetInteger("AnimState", 2);
+                rb.AddForce(new Vector2(0.0f, jumpSpeed));
                 touchedGround = false;
             }
-        
-            if(Mathf.Abs(rb.velocity.x ) > maxVelocity) {
-                float newXVelocity = direction.x * maxVelocity;
-                rb.velocity = new Vector2(newXVelocity, rb.velocity.y);
-            }
 
+        // Idle
         } else {
             animController.SetInteger("AnimState", 0);
             rb.velocity = new Vector2(0, rb.velocity.y);
-            offset = Vector2.zero;
         }
 
-        camera.transform.position = new Vector3(rb.position.x, camera.transform.position.y, camera.transform.position.z);
+        //camera.transform.position = new Vector3(rb.position.x, camera.transform.position.y, camera.transform.position.z);
 
     }
 
@@ -98,17 +99,10 @@ public class PlayerScript : MonoBehaviour
         {
             touchedGround = true;
         }
-        if(col.collider.gameObject.tag == "Cherry")
-        {
-            Destroy(col.collider.gameObject);
-            score ++;
-            scoreLabel.text = "Score: " + score.ToString();
-        }
+
         if(col.collider.gameObject.tag == "Obsticle")
         {
             transform.position = defaulPosition;
         }
     }
-
-
 }
