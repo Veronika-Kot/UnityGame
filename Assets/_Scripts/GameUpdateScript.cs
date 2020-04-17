@@ -37,9 +37,13 @@ public class GameUpdateScript : MonoBehaviour
         lives --;
         livesLabel.text = "Lives: " + lives.ToString();
     }
+
+    public void endGame(){
+        SceneManager.LoadScene("EndScene");
+    }
     public bool isEndGame() {
         if(lives <= 0) {
-            SceneManager.LoadScene("EndScene");
+            endGame();
             return true;
         } 
         return false;

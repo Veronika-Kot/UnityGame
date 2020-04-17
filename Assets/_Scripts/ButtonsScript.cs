@@ -12,4 +12,7 @@ public class ButtonsScript : MonoBehaviour
    public void OnStartButtonPressed() {
        SceneManager.LoadScene("DayScene");
    }
+    public void OnHelpButtonPressed() {
+       SceneManager.LoadScene("HelpScene");
+   }
 }

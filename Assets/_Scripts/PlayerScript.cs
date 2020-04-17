@@ -15,6 +15,7 @@ public class PlayerScript : MonoBehaviour
     public Rigidbody2D rb;
     public float speed;
     public float maxVelocity;
+    public float maxYVelocity;
     public bool touchedGround;
     public float jumpSpeed;
 
@@ -36,12 +37,6 @@ public class PlayerScript : MonoBehaviour
 
         touchedGround = false;
         defaulPosition = transform.position;
-
-        //Debug.Log("Screen Width : " + Screen.width);
-
-        var tempWidth = camera.ScreenToWorldPoint(new Vector3(Screen.width/2, 0.0f, 0.0f));
-        Debug.Log("Screen Width in world: " + tempWidth);
-
     }
 
      private IEnumerator wait(float sec) {
@@ -80,9 +75,16 @@ public class PlayerScript : MonoBehaviour
             }
 
 
-            // Keep Velocity in a range
+            // Keep Horizontal Velocity in a range
             var xVelocity = Mathf.Clamp(Mathf.Abs(rb.velocity.x), 0.0f, maxVelocity);
             rb.velocity = new Vector2(xVelocity * direction.x, rb.velocity.y);
+
+            // Keep Vertical Velocity in a range
+            if(rb.velocity.y > 0)
+            {
+                var yVelocity = Mathf.Clamp(rb.velocity.y, 0.0f, maxYVelocity);
+                rb.velocity = new Vector2(rb.velocity.x, yVelocity);
+            }
 
             // Jump
             if (direction.y > 0.4 && touchedGround) {
@@ -106,12 +108,17 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    //Checking collision with ground and obsticles 
     void OnCollisionEnter2D (Collision2D col)
     {
+        //check contact with ground and platforms
         if(col.collider.gameObject.tag == "Ground")
         {
-            touchedGround = true;
+            if(col.collider.gameObject.transform.position.y < transform.position.y) {
+                touchedGround = true;
+            }
         }
+
 
         if(col.collider.gameObject.tag == "Obsticle")
         {
@@ -119,6 +126,20 @@ public class PlayerScript : MonoBehaviour
                 transform.position = defaulPosition;
                 gameKeeper.GetComponent<GameUpdateScript>().removeLife();
             }
+        }
+
+        if(col.collider.gameObject.tag == "Portal")
+        {
+            gameKeeper.GetComponent<GameUpdateScript>().endGame();
+        }
+    }
+
+    // Updating player's spawn points 
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        if(col.gameObject.tag == "Spawn")
+        {
+            defaulPosition.x = col.gameObject.transform.position.x;
         }
     }
 }

@@ -8,6 +8,8 @@ TagManager:
   - Cherry
   - Obsticle
   - Life
+  - Spawn
+  - Portal
   layers:
   - Default
   - TransparentFX

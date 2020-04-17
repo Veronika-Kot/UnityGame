@@ -6,12 +6,15 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/_Scenes/StartScene.unity
+    guid: 453647f42167141da8a07d48bb607d75
+  - enabled: 1
     path: Assets/_Scenes/DayScene.unity
     guid: 844638850249a1246b20409ae6178dc4
   - enabled: 1
-    path: Assets/_Scenes/EndScene.unity
+    path: Assets/_Scenes/HelpScene.unity
     guid: 0e94add5d52944227b8581ba7a58b8f8
   - enabled: 1
-    path: Assets/_Scenes/StartScene.unity
-    guid: 453647f42167141da8a07d48bb607d75
+    path: Assets/_Scenes/EndScene.unity
+    guid: 922f352df6c46844b80bb0322adf6010
   m_configObjects: {}

@@ -15,7 +15,7 @@ public class CameraScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        // Calculating screen size
         float height = Camera.main.orthographicSize * 2.0f;
         float width = height * Camera.main.aspect;
 
