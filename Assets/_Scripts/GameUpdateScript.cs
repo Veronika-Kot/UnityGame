@@ -1,15 +1,21 @@
-﻿using System.Collections;
+﻿/**
+* Author: Veronika Kotckovich
+* Student ID: 301067511
+**/
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+// Class to keep Game globals and helper functions
 public class GameUpdateScript : MonoBehaviour
 {
     [Header("Scoreboard")]
     public Text scoreLabel;
     public Text livesLabel;
 
+    // Private variables
     private int score;
     private int lives;
 
@@ -42,7 +48,7 @@ public class GameUpdateScript : MonoBehaviour
         SceneManager.LoadScene("EndScene");
     }
     public bool isEndGame() {
-        if(lives <= 0) {
+        if(lives < 1) {
             endGame();
             return true;
         } 

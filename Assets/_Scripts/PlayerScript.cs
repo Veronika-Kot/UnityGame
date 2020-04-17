@@ -1,4 +1,9 @@
-﻿using System.Collections;
+﻿/**
+* Author: Veronika Kotckovich
+* Student ID: 301067511
+**/
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -26,6 +31,11 @@ public class PlayerScript : MonoBehaviour
     public Transform leftPoint;  
     public Transform rightPoint;
 
+    [Header("Sound Effects")]
+    public AudioSource playerDeath;
+    public AudioSource itemPicked;
+    public AudioSource backgroundSound;
+
 
 
     // Start is called before the first frame update
@@ -37,11 +47,10 @@ public class PlayerScript : MonoBehaviour
 
         touchedGround = false;
         defaulPosition = transform.position;
-    }
 
-     private IEnumerator wait(float sec) {
-        yield return new WaitForSeconds(sec);
-     }
+        //Start background music
+        backgroundSound.Play();
+    }
 
     // Update is called once per frame
     void FixedUpdate()
@@ -123,14 +132,27 @@ public class PlayerScript : MonoBehaviour
         if(col.collider.gameObject.tag == "Obsticle")
         {
             if(!gameKeeper.GetComponent<GameUpdateScript>().isEndGame()){
-                transform.position = defaulPosition;
-                gameKeeper.GetComponent<GameUpdateScript>().removeLife();
+                StartCoroutine("playerDie");
             }
         }
 
         if(col.collider.gameObject.tag == "Portal")
         {
             gameKeeper.GetComponent<GameUpdateScript>().endGame();
+        }
+
+        if(col.collider.gameObject.tag == "Cherry")
+        {
+            Destroy(col.collider.gameObject);
+            gameKeeper.GetComponent<GameUpdateScript>().addScore();
+            itemPicked.Play();
+        }
+
+        if(col.collider.gameObject.tag == "Life")
+        {
+             Destroy(col.collider.gameObject);
+            gameKeeper.GetComponent<GameUpdateScript>().addLife();
+            itemPicked.Play();
         }
     }
 
@@ -141,5 +163,15 @@ public class PlayerScript : MonoBehaviour
         {
             defaulPosition.x = col.gameObject.transform.position.x;
         }
+    }
+
+    IEnumerator playerDie() {
+        Debug.Log("Before Waiting 2 seconds");
+        playerDeath.Play();
+        animController.SetInteger("AnimState", 3);
+        yield return new WaitForSeconds(0.4f);  //Wait for die animation
+        transform.position = defaulPosition;
+        gameKeeper.GetComponent<GameUpdateScript>().removeLife();
+        Debug.Log("After Waiting 2 Seconds");
     }
 }

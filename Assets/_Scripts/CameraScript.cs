@@ -1,4 +1,8 @@
-﻿using System.Collections;
+﻿/**
+* Author: Veronika Kotckovich
+* Student ID: 301067511
+**/
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,7 +31,7 @@ public class CameraScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        //Update camera to player postion
         transform.position = new Vector3(player.position.x, transform.position.y, transform.position.z);
 
         // Don't let camera go to the beyond screen edges

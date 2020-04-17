@@ -1,8 +1,13 @@
-﻿using System.Collections;
+﻿/**
+* Author: Veronika Kotckovich
+* Student ID: 301067511
+**/
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Class for Help screen Slides
 public class InstractionsScript : MonoBehaviour
 {
     public Image image;
